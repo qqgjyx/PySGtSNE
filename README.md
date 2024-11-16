@@ -1,1 +1,1 @@
-# PySGtSNE
+# PySGtSNE-Π
