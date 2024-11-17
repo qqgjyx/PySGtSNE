@@ -1,11 +1,11 @@
 copyright: Copyright &copy; 2024 Juntang Wang
-repo_url: https://github.com/qqgjyx/mheatmap
+repo_url: https://github.com/qqgjyx/sgtsnepi
 edit_uri: edit/main/docs/
 extra_css:
   - stylesheets/extra.css
   - https://unpkg.com/katex@0/dist/katex.min.css
-site_name: mheatmap
-site_url: https://qqgjyx.com/mheatmap/
+site_name: sgtsnepi
+site_url: https://qqgjyx.com/sgtsnepi/
 theme:
   features:
     - navigation.instant
