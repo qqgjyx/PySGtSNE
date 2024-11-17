@@ -8,13 +8,13 @@ hide:
 ## Install from PyPI
 
 ```bash
-pip install mheatmap
+pip install pysgtsnepi
 ```
 
 ## Install from source
 
 ```bash
-git clone https://github.com/qqgjyx/mheatmap.git # (1) 
-cd mheatmap
+git clone https://github.com/qqgjyx/pysgtsnepi.git
+cd pysgtsnepi
 pip install .
 ```

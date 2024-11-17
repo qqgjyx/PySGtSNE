@@ -6,32 +6,34 @@ from typing import Literal
 
 from scipy.optimize import root_scalar
 
+
 def sgtsne_lambda_equalization(
     D: csc_matrix,
     lambda_: float,
     max_iter: int = 50,
     tol_binary: float = 1e-5,
     algorithm: Literal[
-        "custom_bisection", 
-        "bisection", 
+        "custom_bisection",
+        "bisection",
         "brentq",
         "brenth",
         "bisect",
         "ridder",
         "newton",
         "secant",
-        "halley"
+        "halley",
     ] = "custom_bisection",
 ) -> csc_matrix:
     """Binary search for the scales of column-wise conditional probabilities.
 
-    Binary search for the scales of column-wise conditional probabilities 
+    Binary search for the scales of column-wise conditional probabilities
     from exp(-D) to exp(-D/σ²)/z equalized by λ.
 
     Parameters
     ----------
     D : scipy.sparse.csc_matrix
-        N x N sparse matrix of "distance square" (column-wise conditional, local distances)
+        N x N sparse matrix of "distance square"
+        (column-wise conditional, local distances)
     lambda_ : float
         The equalization parameter
     max_iter : int, optional
@@ -65,15 +67,15 @@ def sgtsne_lambda_equalization(
         """Helper function to compute column sum"""
 
         # minimum possible value (python float precision)
-        D_min = np.finfo(float).tiny   
-        
-        vals = D.data[D.indptr[j]:D.indptr[j+1]]    
+        D_min = np.finfo(float).tiny
+
+        vals = D.data[D.indptr[j] : D.indptr[j + 1]]
         sum_j = np.sum(np.exp(-vals * sigma))
         return max(sum_j, D_min)
 
     def colupdate(D, j, sigma):
         """Helper function to update column values"""
-        start, end = D.indptr[j], D.indptr[j+1]
+        start, end = D.indptr[j], D.indptr[j + 1]
         D.data[start:end] = np.exp(-D.data[start:end] * sigma)
 
     #############################################################################
@@ -92,30 +94,30 @@ def sgtsne_lambda_equalization(
     #                       pre-calculate average entropy                       #
     #############################################################################
 
-    for j in range(n):                  # loop over all columns of D
+    for j in range(n):  # loop over all columns of D
         sum_j = colsum(D, j)
-        i_tval[j] = sum_j - lambda_     # difference from λ
+        i_tval[j] = sum_j - lambda_  # difference from λ
 
     #############################################################################
     #                        search for σ²                                      #
     #############################################################################
 
     if algorithm == "custom_bisection":
-        for j in range(n):                  # loop over all columns of D
+        for j in range(n):  # loop over all columns of D
             fval = i_tval[j]
-            lb, ub = -1000.0, np.inf        # lower and upper bounds
+            lb, ub = -1000.0, np.inf  # lower and upper bounds
 
             iter_count = 0
 
             while abs(fval) > tol_binary and iter_count < max_iter:
                 iter_count += 1
 
-                if fval > 0:                # update lower bound
+                if fval > 0:  # update lower bound
                     lb = sigma_sq[j]
-                    sigma_sq[j] = 2*lb if np.isinf(ub) else 0.5*(lb + ub)
-                else:                       # update upper bound
+                    sigma_sq[j] = 2 * lb if np.isinf(ub) else 0.5 * (lb + ub)
+                else:  # update upper bound
                     ub = sigma_sq[j]
-                    sigma_sq[j] = 0.5*ub if np.isinf(lb) else 0.5*(lb + ub)
+                    sigma_sq[j] = 0.5 * ub if np.isinf(lb) else 0.5 * (lb + ub)
 
                 # Re-calculate local entropy
                 sum_j = colsum(D, j, sigma_sq[j])
@@ -131,37 +133,42 @@ def sgtsne_lambda_equalization(
             # Define the objective function
             def objective(x):
                 return colsum(D, j, x) - lambda_
-            
+
             try:
                 # For methods that require brackets
-                if algorithm in ['brentq', 'brenth', 'bisect', 'ridder']:
-                    result = root_scalar(objective,
-                                       method=algorithm,
-                                       bracket=[-1000.0, np.inf],
-                                       xtol=tol_binary,
-                                       maxiter=max_iter,
-                                       full_output=True)
+                if algorithm in ["brentq", "brenth", "bisect", "ridder"]:
+                    result = root_scalar(
+                        objective,
+                        method=algorithm,
+                        bracket=[-1000.0, np.inf],
+                        xtol=tol_binary,
+                        maxiter=max_iter,
+                        full_output=True,
+                    )
                 # For methods that require initial guess
-                elif algorithm in ['newton', 'secant', 'halley']:
-                    result = root_scalar(objective,
-                                       method=algorithm,
-                                       x0=1.0,
-                                       xtol=tol_binary,
-                                       maxiter=max_iter,
-                                       full_output=True)
+                elif algorithm in ["newton", "secant", "halley"]:
+                    result = root_scalar(
+                        objective,
+                        method=algorithm,
+                        x0=1.0,
+                        xtol=tol_binary,
+                        maxiter=max_iter,
+                        full_output=True,
+                    )
                 else:
                     raise ValueError(f"Unsupported root finding method: {algorithm}")
-                
+
                 sigma_sq[j] = result.root
                 i_diff[j] = objective(sigma_sq[j])
                 i_count[j] = result.iterations
                 colupdate(cond_P, j, sigma_sq[j])
-                
+
             except (ValueError, RuntimeError) as e:
                 # If root finding fails, use the initial value
-                warnings.warn(
-                    f"Root finding failed for column {j} with {algorithm} method: {str(e)}"
+                msg = (
+                    f"Failed for column {j} with {algorithm} method: {str(e)}"
                 )
+                warnings.warn(msg)
                 sigma_sq[j] = 1.0
                 i_diff[j] = objective(sigma_sq[j])
                 i_count[j] = 0
@@ -181,6 +188,8 @@ def sgtsne_lambda_equalization(
 
     n_neg = np.sum(sigma_sq < 0)
     if n_neg > 0:
-        warnings.warn(f"There are {n_neg} nodes with negative γᵢ; consider decreasing λ")
+        warnings.warn(
+            f"There are {n_neg} nodes with negative γᵢ; consider decreasing λ"
+        )
 
     return cond_P

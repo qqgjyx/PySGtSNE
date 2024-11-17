@@ -1,5 +1,5 @@
 copyright: Copyright &copy; 2024 Juntang Wang
-repo_url: https://github.com/qqgjyx/sgtsnepi
+repo_url: https://github.com/qqgjyx/pysgtsnepi
 edit_uri: edit/main/docs/
 extra_css:
   - stylesheets/extra.css
@@ -47,8 +47,8 @@ theme:
   font:
     text: EB Garamond
     code: JetBrains Mono
-  logo: assets/mheatmap.png
-  favicon: assets/mheatmap.png
+  logo: assets/sgtsne.png
+  favicon: assets/sgtsne.png
   icon:
     previous: fontawesome/solid/angle-left
     next: fontawesome/solid/angle-right

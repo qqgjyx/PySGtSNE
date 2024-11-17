@@ -1,7 +1,3 @@
 nav:
   - index.md
-  - AMC Post-Process: amc-postprocess.md
-  - Mosaic Heatmap: mosaic-heatmap.md
-  - Permutation:
-    - rms-permute.md
-    - spectral-permute.md
+  - sgtsne_lambda_equalization: sgtsne-lambda-eq.md
