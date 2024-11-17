@@ -1,8 +1,8 @@
-# <img src="assets/sgtsne.png" width="40px" align="center" alt="sgtsnepi logo"> PySGtSNEpi
+# <img src="docs/assets/sgtsne.png" width="40px" align="center" alt="sgtsnepi logo"> PySGtSNEpi
 
-<img src="assets/logo.png" width="800px" align="center" alt="sgtsnepi demo">
+<img src="docs/assets/logo.png" width="800px" align="center" alt="sgtsnepi demo">
 
-[![PyPI version](https://badge.fury.io/py/sgtsnepi.svg)](https://badge.fury.io/py/sgtsnepi)
+[![PyPI version](https://badge.fury.io/py/pysgtsnepi.svg)](https://badge.fury.io/py/pysgtsnepi)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 PySGtSNEpi is a Python module (wrapper) implementing the Swift Neighbor Embedding
@@ -35,6 +35,12 @@ git clone https://github.com/qqgjyx/pysgtsnepi.git
 cd pysgtsnepi
 pip install .
 ```
+
+---
+
+## 📚 Documentation
+
+Full documentation is available at [www.qqgjyx.com/pysgtsnepi](https://www.qqgjyx.com/pysgtsnepi).
 
 ---
 

@@ -4,8 +4,8 @@ edit_uri: edit/main/docs/
 extra_css:
   - stylesheets/extra.css
   - https://unpkg.com/katex@0/dist/katex.min.css
-site_name: sgtsnepi
-site_url: https://qqgjyx.com/sgtsnepi/
+site_name: pysgtsnepi
+site_url: https://qqgjyx.com/pysgtsnepi/
 theme:
   features:
     - navigation.instant
